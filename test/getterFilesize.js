@@ -9,8 +9,9 @@ module.exports = function (gm, dir, finish, GM) {
   .filesize(function getterfilesize (err, size) {
     if (err) return finish(err);
 
-    if (this._options.imageMagick) {
-      assert.equal('7792B', size, size);
+    if (this._options.imageMagick === true) {
+      //assert.equal('7792B', size);
+      assert.ok(/7.79K[B]{0,1}/.test(size));
     } else {
       assert.ok(/7.6K[i]{0,1}/.test(size));
     }
@@ -26,7 +27,7 @@ module.exports = function (gm, dir, finish, GM) {
     this.filesize(function (err, size) {
       if (err) return finish(err);
 
-      if (this._options.imageMagick) {
+      if (this._options.imageMagick === true) {
         assert.equal('7792B', size, size);
       } else {
         assert.ok(/7.6K[i]{0,1}/.test(size));

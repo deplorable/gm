@@ -6,6 +6,7 @@ var dir = __dirname + '/../examples/imgs';
 var gm = require('../');
 var assert = require('assert');
 var fs = require('fs');
+var path = require('path');
 var only = process.argv.slice(2);
 gm.integration = !! ~process.argv.indexOf('--integration');
 if (gm.integration) only.shift();
@@ -28,7 +29,7 @@ function test (imagemagick) {
   return gm(dir + '/original.jpg');
 }
 
-function finish (filename) {
+function finish (filename,im) {
   return function (err) {
     if (err) {
       console.error('\n\nError occured with file: ' + filename);
@@ -38,6 +39,9 @@ function finish (filename) {
     process.stdout.write('\033[2K');
     process.stdout.write('\033[0G');
     process.stdout.write('pending ' + (q.length()+q.running()));
+    process.stdout.write(' - ' + path.basename(filename));
+    if (im === true) process.stdout.write(' (ImageMagick)')
+    else process.stdout.write(' (GraphicsMagick)');
   }
 }
 
@@ -48,14 +52,13 @@ var q = async.queue(function (task, callback) {
   var im = task.imagemagick;
 
   require(filename)(test(im), dir, function (err) {
-    finish(filename)(err);
+    finish(filename,im)(err);
     callback();
   }, gm, im);
 }, 1);
 
 q.drain = function(){
-
-process.stdout.write('\033[?25h');
+    process.stdout.write('\033[?25h');
     process.stdout.write('\033[2K');
     process.stdout.write('\033[0G');
     console.error("\n\u001B[32mAll tests passed\u001B[0m");
