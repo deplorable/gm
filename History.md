@@ -1,3 +1,7 @@
+1.24.1 / 2020-07-24
+
+ * removed; no longer require nsp (Node Security Project) npm module 
+ * travis; update node_js versions
 
 1.23.1 / 2017-12-27
 
